@@ -46,15 +46,15 @@ A linux command, lsof, monitors a list of used ports.
 # Check a port
 sudo lsof -i:$PORT
 COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
-ruby    24670 kakao   11u  IPv4 0xf8c58feae0a4e281      0t0  TCP localhost:hbci (LISTEN)
+ruby    24670 caicell   11u  IPv4 0xf8c58feae0a4e281      0t0  TCP localhost:hbci (LISTEN)
 
 # List up used ports
 sudo lsof -i -P -n | grep LISTEN
 ...
-ruby      24670           kakao   11u  IPv4 0xf8c58feae0a4e281      0t0    TCP 127.0.0.1:3000 (LISTEN)
-node      24910           kakao   23u  IPv4 0xf8c58feae30f86d1      0t0    TCP *:3001 (LISTEN)
-PulseSetu 79163           kakao    5u  IPv4 0xf8c58feae0a50b21      0t0    TCP 127.0.0.1:3380 (LISTEN)
-java      79774           kakao   21u  IPv6 0xf8c58feac2833621      0t0    TCP [fe80:1::1]:62108 (LISTEN)
+ruby      24670           caicell   11u  IPv4 0xf8c58feae0a4e281      0t0    TCP 127.0.0.1:3000 (LISTEN)
+node      24910           caicell   23u  IPv4 0xf8c58feae30f86d1      0t0    TCP *:3001 (LISTEN)
+PulseSetu 79163           caicell    5u  IPv4 0xf8c58feae0a50b21      0t0    TCP 127.0.0.1:3380 (LISTEN)
+java      79774           caicell   21u  IPv6 0xf8c58feac2833621      0t0    TCP [fe80:1::1]:62108 (LISTEN)
 ...
 ```
 
