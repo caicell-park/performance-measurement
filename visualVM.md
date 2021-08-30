@@ -131,6 +131,30 @@ jstack included in JDK is a tool to take Thread Dump. <br/>
 
 > Reference [Take Thread Dump](https://blog.fastthread.io/2016/06/06/how-to-take-thread-dumps-7-options/)
 
+Analysis.
+
+1) Find out few unhealthy threads and their pattern
+- A thread executing a task for too long or STUCK
+- `[STUCK] ExecutedThread` A thread stuck more than two or few minutes.
+2) Always analyze a thread from bottom-up
+- `Block State` and the message `Waiting to lock <0xfffff...ae80> (a. weblogic.logging.ConsoleHandler)` Appear twice
+![03-issued-object-stack-traces](images/03-issued-object-stack-thread.png)
+![04-issued-object-2-stack-traces](images/04-issued-object-2-stack-trace.png)
+- Look a thread that has the issued object
+![05-issued-stack-for-a-locked-object](images/05-issued-stack-for-a-locked-object.png)
+- (issue) Class Loader Contention issue!
+![06-class-loader-contention-issue](images/06-class-loader-contention-issue.png)
+- (issue) XML issue!
+![07-xml-stuck-issue](images/07-xml-stuck-issue.png)
+- (Root Cause) GC
+
+Thread dump analysis exposing abnormal slowdown conditions such as logging, class loading, XML parsing etc. is often the symptom of excessive JVM garbage collection and/or Java heap depletion. Look old gen 99% utilized!
+
+![08-99-per-utilized-old-gen](images/08-99-per-utilized-old-gen.png)
+
+
+> Reference [Thread Dump Analysis](https://www.youtube.com/watch?v=3dKufRRT_3E)
+
 ### Heap Dump
 
 Definition. A heap dump is a snapshot of your application’s memory in a point in time. It contains information such as what are the objects in memory, what values do they carry, what is their size, what other objects do they reference. 
