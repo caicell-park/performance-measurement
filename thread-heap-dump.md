@@ -4,7 +4,9 @@ An engineer takes a history of the state of threads and heaps by Thread Dump & H
 
 - [Thread Dump](#01)
 - [Javs Stack Trace Analysis](#02)
-- [Heap Dump](#03)
+- [Hadoop Stack Trace Analysis](#03)
+- [Heap Dump](#04)
+- [Hadoop Heap & Thread Analsysis](#05)
 
 <a id=01></a>
 
@@ -129,6 +131,17 @@ A thread works the below works:
 
 > Reference [how-to-analyze-thread-dump-part-5](http://javaeesupportpatterns.blogspot.com/2012/07/how-to-analyze-thread-dump-part-5.html)
 
+## Tips
+
+1. Find out few unhealthy threads and their pattern
+2. Always analyze a thread from bottom-up
+3. Thread dump analysis exposing abnormal slowdown conditions such as logging, class loading, XML parsing etc. is often the symptom of excessive JVM garbage collection and/or Java heap depletion.
+4. See Histo of threads
+
+![13-line-resource-manager-heap-histogram](images/13-line-resource-manager-heap-histogram.png)
+
+> Reference [data-engineering-software-troubleshooting](https://engineering.linecorp.com/ko/blog/data-engineering-software-troubleshooting/)
+
 ## Example. GC delays ClassLoader
 
 1. Find out few unhealthy threads and their pattern
@@ -147,15 +160,46 @@ A thread works the below works:
   ![06-class-loader-contention-issue](images/06-class-loader-contention-issue.png)
 - (issue) XML issue!
   ![07-xml-stuck-issue](images/07-xml-stuck-issue.png)
-- (Root Cause) GC
-
-Thread dump analysis exposing abnormal slowdown conditions such as logging, class loading, XML parsing etc. is often the symptom of excessive JVM garbage collection and/or Java heap depletion. Look old gen 99% utilized!
+- (Root Cause) GC, Look old gen 99% utilized!
 
 ![08-99-per-utilized-old-gen](images/08-99-per-utilized-old-gen.png)
 
 > Reference [Thread Dump Analysis](https://www.youtube.com/watch?v=3dKufRRT_3E)
 
 <a id=03></a>
+
+# Hadoop Stack Trace Analysis Example
+
+## Rakuten::Datanode
+
+- Rakuten used Thread Dump and analysis to resolve Datanode Freezing.
+
+It caused by a slow computation related to TreeMap.
+
+![09-41-thread-set-lock-on-datanode](images/09-41-thread-set-lock-on-datanode.png)
+![10-thread-41-related-to-treemap](images/10-thread-41-related-to-treemap.png)
+
+## Rakuten::Namenode
+
+- Rakuten used Thread Dump and analysis to resolve an issue, High load after restarting NN.
+
+It caused by a Full Block Report Storm in a short interval.
+
+![11-hdfs-namenode-timeout-warn-log](images/11-hdfs-namenode-timeout-warn-log.png)
+![12-hdfs-namenode-delays-to-handle-a-block](images/12-hdfs-namenode-delays-to-handle-a-block.png)
+
+> Reference
+> [how-to-overcome-mysterious-problems-caused-by-large-and-multitenancy-hadoop-cluster-at-rakuten](https://www.slideshare.net/HadoopSummit/how-to-overcome-mysterious-problems-caused-by-large-and-multitenancy-hadoop-cluster-at-rakuten) > [data-engineering-software-troubleshooting](https://engineering.linecorp.com/ko/blog/data-engineering-software-troubleshooting/)
+
+## Line::ResourceMAnager
+
+An unnecessary service, RegistryAdminService, turns on.
+
+![13-line-resource-manager-heap-histogram](images/13-line-resource-manager-heap-histogram.png)
+
+> Reference [data-engineering-software-troubleshooting](https://engineering.linecorp.com/ko/blog/data-engineering-software-troubleshooting/)
+
+<a id=04></a>
 
 # Heap Dump
 
@@ -206,3 +250,11 @@ Get. jmap
 jmap is a safe tool to take Heap Dump without Full GC. <br/>
 
 `jmap -dump:format=b,file=heapdump.hprof 84544`
+
+<a id=05></a>
+
+# Hadoop Heap & Thread Analsysis
+
+[TBA] During Spark SQL
+
+> Reference [data-engineering-software-troubleshooting](https://engineering.linecorp.com/ko/blog/data-engineering-software-troubleshooting/)
